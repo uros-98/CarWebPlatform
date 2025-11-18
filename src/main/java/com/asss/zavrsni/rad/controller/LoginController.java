@@ -1,6 +1,6 @@
 package com.asss.zavrsni.rad.controller;
 
-import com.asss.zavrsni.rad.dto.LoginRequest;
+import com.asss.zavrsni.rad.dto.LoginRequestDTO;
 import com.asss.zavrsni.rad.model.User;
 import com.asss.zavrsni.rad.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +19,9 @@ public class LoginController {
     private LoginService loginService;
 
     @PostMapping("/log")
-    ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+    ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequestDTO) {
         try {
-            User user = loginService.login(loginRequest.getUsername(), loginRequest.getPassword());
+            User user = loginService.login(loginRequestDTO.getUsername(), loginRequestDTO.getPassword());
             return ResponseEntity.ok("Login success: " + user.getUsername());
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
