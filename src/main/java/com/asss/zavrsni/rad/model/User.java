@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -16,7 +18,6 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
     private int id;
 
     private String firstName;
@@ -32,5 +33,12 @@ public class User {
     private String address;
 
     private String phone;
+
+    private Timestamp createdAt;
+
+    private Timestamp updatedAt;
+
+    @Enumerated(EnumType.STRING)
+    private Roles roles;
 
 }

@@ -2,20 +2,18 @@ package com.asss.zavrsni.rad.service;
 
 import com.asss.zavrsni.rad.model.User;
 import com.asss.zavrsni.rad.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class LoginService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final  UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final  PasswordEncoder passwordEncoder;
 
     public User login(String username, String password) {
         Optional<User> optionalUser = userRepository.findByUsername(username);
