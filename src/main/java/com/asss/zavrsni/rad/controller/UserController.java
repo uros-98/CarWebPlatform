@@ -2,29 +2,33 @@ package com.asss.zavrsni.rad.controller;
 
 import com.asss.zavrsni.rad.model.User;
 import com.asss.zavrsni.rad.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<User> addUser(@RequestBody User user) {
         User newUser = userService.addUser(user);
         return ResponseEntity.ok(newUser);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable int id) {
         userService.deleteUser(id);
         return ResponseEntity.ok("User deleted");
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User user) {
         User update = userService.updateUser(id, user);

@@ -3,7 +3,7 @@ package com.asss.zavrsni.rad.controller;
 import com.asss.zavrsni.rad.dto.LoginRequestDTO;
 import com.asss.zavrsni.rad.model.User;
 import com.asss.zavrsni.rad.service.LoginService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login")
+@RequiredArgsConstructor
 public class LoginController {
 
-    @Autowired
-    private LoginService loginService;
+    private final  LoginService loginService;
 
     @PostMapping("/log")
     ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequestDTO) {

@@ -2,19 +2,16 @@ package com.asss.zavrsni.rad.service;
 
 import com.asss.zavrsni.rad.model.User;
 import com.asss.zavrsni.rad.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public User addUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
