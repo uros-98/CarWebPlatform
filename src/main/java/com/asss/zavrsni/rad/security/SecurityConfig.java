@@ -2,12 +2,14 @@ package com.asss.zavrsni.rad.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -20,7 +22,10 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/users/add", "/login/log", "/users/**").permitAll()
+                .requestMatchers("/login/log").permitAll()
+                .requestMatchers("/users/add").hasRole("ADMIN")
+                .requestMatchers("/users/update/**").hasRole("ADMIN")
+                .requestMatchers("/users/delete/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();
