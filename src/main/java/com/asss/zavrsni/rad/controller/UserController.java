@@ -7,12 +7,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping("/get-all")
+    public List<User> getUser() {
+        return userService.findAllUsers();
+    }
+
+    @GetMapping("/get/{id}")
+    public Optional<User> getUserById(@PathVariable int id) {
+        return userService.findUserById(id);
+    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
