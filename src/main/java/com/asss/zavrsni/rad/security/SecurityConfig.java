@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .requestMatchers("/users/add").hasRole("ADMIN")
                 .requestMatchers("/users/update/**").hasRole("ADMIN")
                 .requestMatchers("/users/delete/**").hasRole("ADMIN")
+                .requestMatchers("/users/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();
