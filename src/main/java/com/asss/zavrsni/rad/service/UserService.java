@@ -1,12 +1,17 @@
 package com.asss.zavrsni.rad.service;
 
+import com.asss.zavrsni.rad.dto.RegisterRequestDTO;
+import com.asss.zavrsni.rad.dto.UpdateUserDTO;
+import com.asss.zavrsni.rad.model.Roles;
 import com.asss.zavrsni.rad.model.User;
 import com.asss.zavrsni.rad.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -32,21 +37,40 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public User updateUser(int id, User newData) {
+    public User updateUser(int id, UpdateUserDTO updateUserDTO) {
         User user = userRepository.findById(id).orElse(null);
 
         if (user == null) {
             System.out.println("User not found");
         } else {
-            user.setFirstName(newData.getFirstName());
-            user.setLastName(newData.getLastName());
-            user.setUsername(newData.getUsername());
-            user.setEmail(newData.getEmail());
-            user.setPassword(passwordEncoder.encode(newData.getPassword()));
-            user.setAddress(newData.getAddress());
-            user.setPhone(newData.getPhone());
+            user.setFirstName(updateUserDTO.getFirstName());
+            user.setLastName(updateUserDTO.getLastName());
+            user.setUsername(updateUserDTO.getUsername());
+            user.setEmail(updateUserDTO.getEmail());
+            user.setPassword(passwordEncoder.encode(updateUserDTO.getPassword()));
+            user.setAddress(updateUserDTO.getAddress());
+            user.setPhone(updateUserDTO.getPhone());
+            if (updateUserDTO.getRoles() != null && !updateUserDTO.getRoles().isEmpty()) {
+                user.setRoles(updateUserDTO.getRoles());
+            }
         }
 
         return userRepository.save(user);
+    }
+
+    public String regiserUser(RegisterRequestDTO registerRequestDTO, Roles roles) {
+        User user = new User();
+        user.setFirstName(registerRequestDTO.getFirstName());
+        user.setLastName(registerRequestDTO.getLastName());
+        user.setUsername(registerRequestDTO.getUsername());
+        user.setEmail(registerRequestDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(registerRequestDTO.getPassword()));
+        user.setAddress(registerRequestDTO.getAdress());
+        user.setPhone(registerRequestDTO.getPhone());
+        user.setRoles(Set.of(roles));
+
+        userRepository.save(user);
+
+        return roles + " is registreted successfully";
     }
 }

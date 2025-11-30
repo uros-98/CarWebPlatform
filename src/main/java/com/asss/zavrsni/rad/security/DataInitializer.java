@@ -8,6 +8,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+
 @Component
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
@@ -26,7 +28,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setPassword(passwordEncoder.encode("admin123"));
             admin.setAddress(null);
             admin.setPhone(null);
-            admin.setRoles(Roles.ADMIN);
+            admin.setRoles(Collections.singleton(Roles.ADMIN));
             userRepository.save(admin);
 
             System.out.println("Admin user created: username=admin, password=admin123");

@@ -1,5 +1,8 @@
 package com.asss.zavrsni.rad.controller;
 
+import com.asss.zavrsni.rad.dto.RegisterRequestDTO;
+import com.asss.zavrsni.rad.dto.UpdateUserDTO;
+import com.asss.zavrsni.rad.model.Roles;
 import com.asss.zavrsni.rad.model.User;
 import com.asss.zavrsni.rad.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -43,8 +46,22 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User user) {
-        User update = userService.updateUser(id, user);
+    public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody UpdateUserDTO updateUserDTO) {
+        User update = userService.updateUser(id, updateUserDTO);
         return ResponseEntity.ok(update);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUser(@RequestBody RegisterRequestDTO registerRequestDTO, @RequestParam("role") String roleStr) {
+
+        Roles role;
+        try {
+            role = Roles.valueOf(roleStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid role: " + roleStr);
+        }
+
+        String result = userService.regiserUser(registerRequestDTO, role);
+        return ResponseEntity.ok(result);
     }
 }
