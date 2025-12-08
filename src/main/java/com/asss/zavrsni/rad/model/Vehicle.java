@@ -30,11 +30,9 @@ public class Vehicle {
 
     private String description;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "fuel_type")
     private String fuelType;
 
-    @Enumerated(EnumType.STRING)
     private String transmission;
 
     private String color;
@@ -44,7 +42,6 @@ public class Vehicle {
 
     private String features;
 
-    @Enumerated(EnumType.STRING)
     private String status;
 
     @Column(name = "created_at")
