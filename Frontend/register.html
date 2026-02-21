@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Cars Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .card { border-radius: 15px; border: none; }
+        .btn-primary { border-radius: 8px; padding: 10px; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg p-4">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold">Create Account</h2>
+                    <p class="text-muted">Join the Cars Platform community</p>
+                </div>
+
+                <div id="alert-box"></div>
+
+                <form id="registerForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">First Name</label>
+                            <input class="form-control" type="text" name="firstName" placeholder="John" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Last Name</label>
+                            <input class="form-control" type="text" name="lastName" placeholder="Doe" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input class="form-control" type="text" name="username" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        <input class="form-control" type="email" name="email" placeholder="name@example.com" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input class="form-control" type="password" name="password" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Home Address</label>
+                        <input class="form-control" type="text" name="address" placeholder="123 Street Name">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Phone Number</label>
+                        <input class="form-control" type="text" name="phone" placeholder="+381...">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Register as:</label>
+                        <select class="form-select border-primary" name="role" required>
+                            <option value="BUYER">Buyer (I want to browse & offer)</option>
+                            <option value="SELLER">Seller (I want to list vehicles)</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary w-100 mb-3" type="submit">Create Account</button>
+                    
+                    <div class="text-center">
+                        <p class="small">Already have an account? <a href="index.html" class="text-decoration-none">Login here</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        const data = {
+            firstName: this.firstName.value,
+            lastName: this.lastName.value,
+            username: this.username.value,
+            email: this.email.value,
+            password: this.password.value,
+            address: this.address.value,
+            phone: this.phone.value
+        };
+
+        const role = this.role.value;
+
+        try {
+            const response = await fetch(`http://localhost:8080/users/register?role=${role}`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data)
+            });
+
+            const text = await response.text();
+
+            if(response.ok){
+                showAlert("Registration successful! Redirecting to login...", "success");
+                this.reset();
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            } else {
+                showAlert(`Registration failed: ${text}`, "danger");
+            }
+
+        } catch (err) {
+            showAlert("Connection error. Is the server running?", "danger");
+            console.error(err);
+        }
+    });
+
+    function showAlert(message, type) {
+        document.getElementById("alert-box").innerHTML = `
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`;
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

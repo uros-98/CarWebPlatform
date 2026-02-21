@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Ad - Cars Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .card { border-radius: 15px; }
+        .form-label { font-weight: 600; }
+    </style>
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-dark bg-dark mb-4 shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="dashboard.html">CARS <span class="text-primary">WEB PLATFORM</span></a>
+            <div id="navActions"></div>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <div class="card shadow p-4 p-md-5 bg-white border-0">
+                    <h2 class="mb-4 text-center">Post a New Ad</h2>
+                    <hr class="mb-4">
+                    
+                    <form id="vehicleForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Make</label>
+                                <input type="text" id="make" class="form-control" placeholder="e.g. BMW" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Model</label>
+                                <input type="text" id="model" class="form-control" placeholder="e.g. M3" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Year</label>
+                                <input type="number" id="year" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Mileage (km)</label>
+                                <input type="number" id="mileage" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Price (€)</label>
+                                <input type="number" id="price" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Fuel</label>
+                                <select id="fuelType" class="form-select">
+                                    <option value="PETROL">Petrol</option>
+                                    <option value="DIESEL">Diesel</option>
+                                    <option value="ELECTRIC">Electric</option>
+                                    <option value="HYBRID">Hybrid</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Transmission</label>
+                                <select id="transmission" class="form-select">
+                                    <option value="Manual">Manual</option>
+                                    <option value="Automatic">Automatic</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Color</label>
+                                <input type="text" id="color" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Engine Capacity (cm³)</label>
+                                <input type="number" step="0.1" id="engineCapacity" class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Category</label>
+                                <select id="categoryId" class="form-select">
+                                    <option value="">Loading...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea id="description" class="form-control" rows="4" placeholder="Describe the vehicle condition..."></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-primary">Vehicle Images</label>
+                            <input type="file" id="imageInput" class="form-control" accept="image/*" multiple required>
+                            <small class="text-muted">You can select multiple images. The first one will be the cover.</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm">Post Ad</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        const token = localStorage.getItem('jwt');
+        if (!token || (getNormalizedRole() !== 'ROLE_SELLER' && getNormalizedRole() !== 'ROLE_ADMIN')) {
+            alert("Unauthorized access!");
+            window.location.href = 'dashboard.html';
+        }
+
+        async function fetchCategories() {
+            try {
+                const res = await fetch(`${API_URL}/categories/all`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const categories = await res.json();
+                document.getElementById('categoryId').innerHTML = categories.map(cat => 
+                    `<option value="${cat.id}">${cat.name}</option>`
+                ).join('');
+            } catch (err) { console.error("Categories error:", err); }
+        }
+
+        document.getElementById('vehicleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+
+            const vehicleDTO = {
+                make: document.getElementById('make').value,
+                model: document.getElementById('model').value,
+                year: parseInt(document.getElementById('year').value),
+                mileage: parseInt(document.getElementById('mileage').value),
+                price: parseFloat(document.getElementById('price').value),
+                description: document.getElementById('description').value,
+                fuelType: document.getElementById('fuelType').value,
+                transmission: document.getElementById('transmission').value,
+                color: document.getElementById('color').value,
+                engineCapacity: parseFloat(document.getElementById('engineCapacity').value) || 0,
+                categoryId: parseInt(document.getElementById('categoryId').value),
+                sellerId: parseInt(localStorage.getItem('id'))
+            };
+
+            formData.append('vehicle', new Blob([JSON.stringify(vehicleDTO)], { type: 'application/json' }));
+
+            const files = document.getElementById('imageInput').files;
+            for (let i = 0; i < files.length; i++) {
+                formData.append('images', files[i]);
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/vehicles/add-vehicle`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert("Vehicle added successfully!");
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert("Error posting ad.");
+                }
+            } catch (err) { console.error(err); }
+        });
+
+        document.addEventListener('DOMContentLoaded', fetchCategories);
+    </script>
+</body>
+</html>
