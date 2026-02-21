@@ -1,9 +1,9 @@
 package com.asss.zavrsni.rad.model;
 
-import com.asss.zavrsni.rad.dto.UpdateVehicleDTO;
 import com.asss.zavrsni.rad.enums.FuelType;
 import com.asss.zavrsni.rad.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -84,17 +84,8 @@ public class Vehicle {
     @ToString.Exclude
     private Set<User> favoritedBy = new HashSet<>();
 
-    public void updateVehicle(UpdateVehicleDTO updateVehicleDTO) {
-        this.make = updateVehicleDTO.getMake();
-        this.model = updateVehicleDTO.getModel();
-        this.year = updateVehicleDTO.getYear();
-        this.mileage = updateVehicleDTO.getMileage();
-        this.price = updateVehicleDTO.getPrice();
-        this.description = updateVehicleDTO.getDescription();
-        this.fuelType = updateVehicleDTO.getFuelType();
-        this.transmission = updateVehicleDTO.getTransmission();
-        this.color = updateVehicleDTO.getColor();
-        this.engineCapacity = updateVehicleDTO.getEngineCapacity();
-        this.updatedAt = LocalDateTime.now();
+    @JsonProperty("sellerId")
+    public Integer getSellerId() {
+        return seller != null ? seller.getId() : null;
     }
 }
